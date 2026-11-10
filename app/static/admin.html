@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodHub | Admin Dashboard</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+
+<div id="admin-app">
+    <main class="admin-container">
+        <section id="login-section" class="login-card">
+            <h1>FoodHub Admin</h1>
+            <p>Sign in to manage your food delivery business.</p>
+
+            <form id="login-form">
+                <label>Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Admin email"
+                    required
+                >
+
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required
+                >
+
+                <button type="submit">Sign In</button>
+                <p id="login-message"></p>
+            </form>
+        </section>
+
+        <section id="dashboard-section" hidden>
+            <header class="dashboard-heading">
+                <div>
+                    <p class="eyebrow">ADMINISTRATION</p>
+                    <h1>Dashboard Overview</h1>
+                    <p>Manage your restaurants, food items and orders.</p>
+                </div>
+
+                <button id="logout-button" class="secondary-button">
+                    Log Out
+                </button>
+            </header>
+
+            <section class="stats-grid">
+                <article class="stat-card">
+                    <p>Restaurants</p>
+                    <h2 id="total-restaurants">0</h2>
+                </article>
+
+                <article class="stat-card">
+                    <p>Food Items</p>
+                    <h2 id="total-foods">0</h2>
+                </article>
+
+                <article class="stat-card">
+                    <p>Total Orders</p>
+                    <h2 id="total-orders">0</h2>
+                </article>
+
+                <article class="stat-card">
+                    <p>Pending Orders</p>
+                    <h2 id="pending-orders">0</h2>
+                </article>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Restaurant Management</h2>
+                    <button id="add-restaurant-button">
+                        Add Restaurant
+                    </button>
+                </div>
+
+                <div id="restaurant-list"></div>
+
+                <form id="restaurant-form" hidden>
+                    <h3 id="restaurant-form-title">Add Restaurant</h3>
+
+                    <input type="hidden" id="restaurant-id">
+
+                    <label>Restaurant Name</label>
+                    <input id="restaurant-name" required>
+
+                    <label>Category</label>
+                    <input id="restaurant-category" required>
+
+                    <label>Address</label>
+                    <input id="restaurant-address" required>
+
+                    <div class="form-actions">
+                        <button type="submit">Save Restaurant</button>
+                        <button type="button" id="cancel-restaurant">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Food Management</h2>
+                    <button id="add-food-button">Add Food Item</button>
+                </div>
+
+                <div class="filter-row">
+                    <label for="food-restaurant-select">
+                        Select Restaurant
+                    </label>
+                    <select id="food-restaurant-select"></select>
+                </div>
+
+                <div id="food-list"></div>
+
+                <form id="food-form" hidden>
+                    <h3 id="food-form-title">Add Food Item</h3>
+
+                    <input type="hidden" id="food-id">
+
+                    <label>Food Name</label>
+                    <input id="food-name" required>
+
+                    <label>Description</label>
+                    <textarea id="food-description"></textarea>
+
+                    <label>Price (PKR)</label>
+                    <input
+                        type="number"
+                        id="food-price"
+                        min="1"
+                        step="0.01"
+                        required
+                    >
+
+                    <div class="form-actions">
+                        <button type="submit">Save Food Item</button>
+                        <button type="button" id="cancel-food">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel">
+                <div class="section-heading">
+                    <h2>Order Management</h2>
+                    <button id="refresh-orders">Refresh Orders</button>
+                </div>
+
+                <div id="order-list"></div>
+            </section>
+        </section>
+    </main>
+</div>
+
+<script src="/admin.js"></script>
+<script src="/admin-nav.js"></script>
+
+</body>
+</html>

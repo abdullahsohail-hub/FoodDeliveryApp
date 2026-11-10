@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodHub | Sales Reports</title>
+    <link rel="stylesheet" href="/reports.css">
+</head>
+<body>
+
+<main class="container">
+
+    <header class="heading">
+        <div>
+            <p class="eyebrow">BUSINESS OVERVIEW</p>
+            <h1>Sales Reports</h1>
+            <p>Monitor your business performance and sales.</p>
+        </div>
+
+        <select id="period">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+        </select>
+    </header>
+
+    <p id="message"></p>
+
+    <section class="stats">
+        <article class="stat-card">
+            <p>Total Sales</p>
+            <h2 id="revenue">Rs. 0</h2>
+        </article>
+
+        <article class="stat-card">
+            <p>Total Orders</p>
+            <h2 id="orders">0</h2>
+        </article>
+
+        <article class="stat-card">
+            <p>Registered Customers</p>
+            <h2 id="customers">0</h2>
+        </article>
+
+        <article class="stat-card">
+            <p>Average Order Value</p>
+            <h2 id="average">Rs. 0</h2>
+        </article>
+    </section>
+
+    <section class="panel">
+        <h2>Daily Sales</h2>
+        <div id="daily-chart" class="chart"></div>
+    </section>
+
+    <section class="two-columns">
+
+        <article class="panel">
+            <h2>Order Status Breakdown</h2>
+            <div id="statuses"></div>
+        </article>
+
+        <article class="panel">
+            <h2>Top Restaurants</h2>
+            <div id="restaurants"></div>
+        </article>
+
+    </section>
+
+    <section class="panel">
+        <h2>Best-Selling Food Items</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Food Item</th>
+                        <th>Units Sold</th>
+                        <th>Sales</th>
+                    </tr>
+                </thead>
+
+                <tbody id="foods"></tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<script src="/reports.js"></script>
+<script src="/admin-nav.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#171717">
+
+    <title>FoodHub | Discover Great Food</title>
+
+    <!-- FoodHub favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="nav-container">
+
+        <a href="#" class="logo" onclick="showSection('home')">
+            FOOD<span>HUB.</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#" onclick="showSection('home')">Home</a>
+            <a href="#" onclick="showSection('restaurants')">Restaurants</a>
+            <a href="#" onclick="showSection('orders')">My Orders</a>
+            <a href="#" onclick="showSection('cart')">
+                Cart <span id="cart-count">0</span>
+            </a>
+        </nav>
+
+        <div class="nav-account">
+            <button id="login-nav" class="btn btn-outline"
+                onclick="showSection('login')">Login</button>
+
+            <button id="register-nav" class="btn btn-primary"
+                onclick="showSection('register')">Register</button>
+
+            <button id="logout-nav" class="btn btn-outline hidden"
+                onclick="logout()">Logout</button>
+
+            <span id="account-name"></span>
+        </div>
+
+    </div>
+</header>
+
+
+<main>
+
+    <!-- HOME -->
+
+    <section id="home" class="section active">
+
+        <div class="hero">
+
+            <div class="hero-content">
+
+                <span class="eyebrow">GOOD FOOD. GREAT MOMENTS.</span>
+
+                <h1>
+                    Your cravings.
+                    <span>Our delivery.</span>
+                </h1>
+
+                <p>
+                    Discover Lahore's favourite restaurants,
+                    explore delicious menus and get your food
+                    delivered straight to your doorstep.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-large"
+                        onclick="showSection('restaurants')">
+                        Explore Restaurants →
+                    </button>
+
+                    <button class="btn btn-outline btn-large"
+                        onclick="showSection('orders')">
+                        My Orders
+                    </button>
+                </div>
+
+                <div class="hero-trust">
+                    <span>🍽️ Multiple restaurants</span>
+                    <span>💵 Cash on delivery</span>
+                </div>
+
+            </div>
+
+            <div class="hero-visual">
+
+                <img
+                    src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1100&q=85"
+                    alt="Freshly prepared pizza">
+
+                <div class="hero-floating-card">
+                    <span>🔥</span>
+                    <div>
+                        <strong>Something delicious</strong>
+                        <small>Is waiting for you</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">HANDPICKED FOR YOU</span>
+                <h2>Popular Restaurants</h2>
+            </div>
+
+            <button class="text-button"
+                onclick="showSection('restaurants')">
+                View all →
+            </button>
+        </div>
+
+        <div id="featured-restaurants" class="restaurant-grid"></div>
+
+
+        <div class="promo-banner">
+            <div>
+                <span class="eyebrow">YOUR NEXT MEAL AWAITS</span>
+                <h2>Good food. No compromises.</h2>
+                <p>Find your next favourite meal on FoodHub.</p>
+            </div>
+
+            <button class="btn btn-light"
+                onclick="showSection('restaurants')">
+                Explore Now →
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- RESTAURANTS -->
+
+    <section id="restaurants" class="section">
+
+        <div class="page-heading">
+            <span class="eyebrow">THE FOODHUB COLLECTION</span>
+            <h1>Find your next favourite.</h1>
+            <p>Explore restaurants and discover something delicious.</p>
+        </div>
+
+        <div class="search-container">
+            <span>⌕</span>
+            <input
+                type="text"
+                id="restaurant-search"
+                placeholder="Search restaurants..."
+                oninput="loadRestaurants(this.value)">
+        </div>
+
+        <div id="restaurant-list" class="restaurant-grid"></div>
+
+    </section>
+
+
+    <!-- MENU -->
+
+    <section id="menu" class="section">
+
+        <button class="back-button"
+            onclick="showSection('restaurants')">
+            ← Back to restaurants
+        </button>
+
+        <div id="menu-heading" class="menu-heading"></div>
+
+        <div id="menu-items" class="food-grid"></div>
+
+    </section>
+
+
+    <!-- LOGIN -->
+
+    <section id="login" class="section auth-section">
+
+        <div class="auth-card">
+
+            <span class="eyebrow">WELCOME BACK</span>
+
+            <h1>Good to see you.</h1>
+            <p>Login to continue your FoodHub experience.</p>
+
+            <form id="login-form">
+
+                <label>Email address</label>
+                <input
+                    type="email"
+                    id="login-email"
+                    placeholder="you@example.com"
+                    required>
+
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="login-password"
+                    placeholder="Enter your password"
+                    required>
+
+                <button class="btn btn-primary btn-full" type="submit">
+                    Login →
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="#" onclick="showSection('register')">Register</a>
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- REGISTER -->
+
+    <section id="register" class="section auth-section">
+
+        <div class="auth-card">
+
+            <span class="eyebrow">JOIN FOODHUB</span>
+
+            <h1>Create an account.</h1>
+            <p>Your next favourite meal is waiting.</p>
+
+            <form id="register-form">
+
+                <label>Full name</label>
+                <input
+                    type="text"
+                    id="register-name"
+                    placeholder="Your name"
+                    required>
+
+                <label>Email address</label>
+                <input
+                    type="email"
+                    id="register-email"
+                    placeholder="you@example.com"
+                    required>
+
+                <label>Phone number</label>
+                <input
+                    type="tel"
+                    id="register-phone"
+                    placeholder="Your phone number"
+                    required>
+
+                <label>Delivery address</label>
+                <input
+                    type="text"
+                    id="register-address"
+                    placeholder="Your address"
+                    required>
+
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="register-password"
+                    placeholder="Create a password"
+                    required>
+
+                <button class="btn btn-primary btn-full" type="submit">
+                    Create Account →
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Already registered?
+                <a href="#" onclick="showSection('login')">Login</a>
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- CART -->
+
+    <section id="cart" class="section">
+
+        <div class="page-heading">
+            <span class="eyebrow">YOUR SELECTION</span>
+            <h1>Your Cart.</h1>
+            <p>Review your items before checking out.</p>
+        </div>
+
+        <div id="cart-items"></div>
+        <div id="cart-summary"></div>
+
+    </section>
+
+
+    <!-- CHECKOUT -->
+
+    <section id="checkout" class="section">
+
+        <div class="page-heading">
+            <span class="eyebrow">ALMOST THERE</span>
+            <h1>Checkout.</h1>
+            <p>Confirm your delivery details.</p>
+        </div>
+
+        <div class="checkout-card">
+
+            <label>Delivery address</label>
+
+            <textarea
+                id="checkout-address"
+                rows="3"
+                placeholder="Enter your delivery address"></textarea>
+
+            <div class="payment-info">
+                <span>💵</span>
+                <div>
+                    <strong>Cash on Delivery</strong>
+                    <p>Pay when your food arrives.</p>
+                </div>
+            </div>
+
+            <div id="checkout-summary"></div>
+
+            <button class="btn btn-primary btn-full"
+                onclick="placeOrder()">
+                Confirm Order →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+
+    <section id="orders" class="section">
+
+        <div class="page-heading">
+            <span class="eyebrow">YOUR FOOD JOURNEY</span>
+            <h1>My Orders.</h1>
+            <p>Keep track of your previous orders.</p>
+        </div>
+
+        <div id="order-list"></div>
+
+    </section>
+
+</main>
+
+
+<div id="notification" class="notification"></div>
+
+
+<footer>
+    <a href="#" class="logo">FOOD<span>HUB.</span></a>
+    <p>Good food. Great moments. Delivered.</p>
+    <small>© 2026 FoodHub. All rights reserved.</small>
+</footer>
+
+
+<script src="/app.js"></script>
+
+</body>
+</html>
