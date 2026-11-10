@@ -5,207 +5,172 @@ let token = localStorage.getItem("foodhub_token");
 let currentRestaurant = null;
 let cart = [];
 
-/* ------------------------------
-   IMAGE CONFIGURATION
------------------------------- */
-
-function imageURL(id) {
-    if (String(id).startsWith("http")) return id;
-
-    return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1000&q=85`;
-}
-
 const RESTAURANT_DESIGNS = {
-    "biryani master": {
-        image: "https://images.pexels.com/photos/12737817/pexels-photo-12737817.jpeg",
-        icon: "🍛"
-    },
-    "desi dera": {
-        image: "photo-1589302168068-964664d93dc0",
-        icon: "🫓"
-    },
     "burger lab": {
-        image: "photo-1568901346375-23c9450c58cd",
-        icon: "🍔"
+        description: "A classic burger kitchen serving crispy chicken, stacked beef burgers and satisfying sides.",
+        accent: "#c62828", soft: "#fff0ed", dark: "#651b1b", style: "stacked"
     },
     "foodhub burgers": {
-        image: "photo-1550547660-d9450f859349",
-        icon: "🍔"
+        description: "American-style burgers, crispy chicken sandwiches and loaded sides made for serious cravings.",
+        accent: "#d92727", soft: "#fff0ef", dark: "#641414", style: "bold"
     },
     "pizza palace": {
-        image: "photo-1513104890138-7c749659a591",
-        icon: "🍕"
+        description: "Oven-baked pizzas with rich tomato sauce, generous toppings and golden melted cheese.",
+        accent: "#d94b35", soft: "#fff0e9", dark: "#70261b", style: "italian"
+    },
+    "biryani master": {
+        description: "Aromatic dum biryani layered with fragrant basmati rice, tender meat and traditional Pakistani spices.",
+        accent: "#c58a17", soft: "#fff7df", dark: "#60420c", style: "heritage"
     },
     "pasta corner": {
-        image: "photo-1473093295043-cdd812d0e601",
-        icon: "🍝"
+        description: "Italian-inspired pasta, rich sauces, fresh herbs and comforting oven-baked favourites.",
+        accent: "#367b51", soft: "#eaf5ed", dark: "#19482c", style: "modern"
+    },
+    "desi dera": {
+        description: "Traditional Pakistani cooking, from rich karahi and slow-cooked curries to freshly prepared naan.",
+        accent: "#95602e", soft: "#f8eee1", dark: "#56351b", style: "heritage"
     },
     "wrap house": {
-        image: "photo-1626700051175-6818013e1d4f",
-        icon: "🌯"
+        description: "Freshly assembled wraps, grilled fillings, house sauces and satisfying street-food sides.",
+        accent: "#668b27", soft: "#f1f8e6", dark: "#3d5515", style: "fresh"
+    },
+    "sweet treats": {
+        description: "A dessert collection of cakes, brownies, pastries, ice cream and freshly prepared sweet favourites.",
+        accent: "#d45b91", soft: "#fff0f6", dark: "#7b2850", style: "soft"
+    },
+    "grill station": {
+        description: "Chargrilled meats, smoky marinades and barbecue favourites prepared with bold seasoning.",
+        accent: "#e05a27", soft: "#fff0e8", dark: "#65250d", style: "dark"
+    },
+    "sushi house": {
+        description: "Japanese-inspired sushi, rice bowls, ramen and carefully prepared Asian favourites.",
+        accent: "#354b83", soft: "#edf1fc", dark: "#202f58", style: "minimal"
+    },
+    "taco loco": {
+        description: "Mexican street-food favourites featuring loaded tacos, fresh salsa and bold fillings.",
+        accent: "#df7627", soft: "#fff2df", dark: "#71390d", style: "vibrant"
+    },
+    "seoul kitchen": {
+        description: "Korean comfort food featuring savoury rice bowls, glazed chicken and traditional noodles.",
+        accent: "#8e426d", soft: "#f8edf4", dark: "#562443", style: "modern"
+    },
+    "ocean basket": {
+        description: "Seafood favourites featuring grilled fish, prawns, calamari and coastal-inspired dishes.",
+        accent: "#1685a0", soft: "#e8f7fb", dark: "#0c4c5c", style: "coastal"
+    },
+    "morning theory": {
+        description: "A relaxed café serving breakfast plates, freshly brewed coffee and bakery favourites.",
+        accent: "#91613f", soft: "#f5eee7", dark: "#533722", style: "cafe"
+    },
+    "dragon wok": {
+        description: "Wok-inspired Chinese dishes, fried rice, noodles and stir-fried favourites.",
+        accent: "#b72b2b", soft: "#fff0f0", dark: "#661616", style: "bold"
+    },
+    "beirut table": {
+        description: "Lebanese and Middle Eastern favourites with shawarma, hummus, grilled kebabs and fresh wraps.",
+        accent: "#75834b", soft: "#f1f4e7", dark: "#46502c", style: "earthy"
     }
 };
 
-const RESTAURANT_DEFAULTS = [
-    "photo-1555396273-367ea4eb4db5",
-    "photo-1414235077428-338989a2e8c0",
-    "photo-1559339352-11d035aa65de",
-    "photo-1517248135467-4c7edcad34c4",
-    "photo-1513104890138-7c749659a591"
-];
+/* UNIQUE RESTAURANT IMAGES */
 
-function getRestaurantDesign(restaurant, index = 0) {
+const RESTAURANT_IMAGES = {
+    "burger lab": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&auto=format&fit=crop",
+    "foodhub burgers": "https://images.unsplash.com/photo-1550547660-d9450f859349?w=900&auto=format&fit=crop",
+    "pizza palace": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=900&auto=format&fit=crop",
+
+    // Updated Biryani Master image
+    "biryani master": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=900&auto=format&fit=crop",
+
+    "pasta corner": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=900&auto=format&fit=crop",
+    "desi dera": "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=900&auto=format&fit=crop",
+    "wrap house": "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=900&auto=format&fit=crop",
+    "sweet treats": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=900&auto=format&fit=crop",
+    "grill station": "https://images.unsplash.com/photo-1544025162-d76694265947?w=900&auto=format&fit=crop",
+    "sushi house": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=900&auto=format&fit=crop",
+    "taco loco": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=900&auto=format&fit=crop",
+    "seoul kitchen": "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=900&auto=format&fit=crop",
+    "ocean basket": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=900&auto=format&fit=crop",
+    "morning theory": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=900&auto=format&fit=crop",
+    "dragon wok": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=900&auto=format&fit=crop",
+    "beirut table": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900&auto=format&fit=crop"
+};
+
+const BIRYANI_FALLBACK_IMAGE =
+    "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=900&auto=format&fit=crop";
+
+const RATINGS = {
+    "burger lab": "4.4",
+    "foodhub burgers": "4.3",
+    "pizza palace": "4.6",
+    "biryani master": "4.8",
+    "pasta corner": "4.7",
+    "desi dera": "4.4",
+    "wrap house": "4.5",
+    "sweet treats": "4.8",
+    "grill station": "4.7",
+    "sushi house": "4.9",
+    "taco loco": "4.6",
+    "seoul kitchen": "4.8",
+    "ocean basket": "4.7",
+    "morning theory": "4.5",
+    "dragon wok": "4.6",
+    "beirut table": "4.8"
+};
+
+function getRestaurantDesign(restaurant) {
     const name = String(restaurant.name || "").trim().toLowerCase();
 
-    if (RESTAURANT_DESIGNS[name]) {
-        return RESTAURANT_DESIGNS[name];
-    }
-
-    const cuisine = String(
-        restaurant.cuisine || restaurant.category || ""
-    ).toLowerCase();
-
-    if (cuisine.includes("pizza")) {
-        return { image: "photo-1513104890138-7c749659a591", icon: "🍕" };
-    }
-
-    if (cuisine.includes("pasta")) {
-        return { image: "photo-1473093295043-cdd812d0e601", icon: "🍝" };
-    }
-
-    if (cuisine.includes("burger")) {
-        return { image: "photo-1550547660-d9450f859349", icon: "🍔" };
-    }
-
-    if (cuisine.includes("biryani") || cuisine.includes("pakistani")) {
-        return {
-            image: "https://images.pexels.com/photos/12737817/pexels-photo-12737817.jpeg",
-            icon: "🍛"
-        };
-    }
-
-    if (cuisine.includes("chinese")) {
-        return { image: "photo-1525755662778-989d0524087e", icon: "🥡" };
-    }
-
-    if (cuisine.includes("cafe") || cuisine.includes("coffee")) {
-        return { image: "photo-1509042239860-f550ce710b93", icon: "☕" };
-    }
-
-    if (cuisine.includes("japanese") || cuisine.includes("sushi")) {
-        return { image: "photo-1579871494447-9811cf80d66c", icon: "🍣" };
-    }
-
-    return {
-        image: RESTAURANT_DEFAULTS[index % RESTAURANT_DEFAULTS.length],
-        icon: "🍽️"
+    return RESTAURANT_DESIGNS[name] || {
+        description: restaurant.description || "Freshly prepared favourites made with care.",
+        accent: "#f36b32",
+        soft: "#fff0e8",
+        dark: "#702b18",
+        style: "modern"
     };
 }
 
-/* ------------------------------
-   RESTAURANT RATINGS
------------------------------- */
-
-const RESTAURANT_RATINGS = {
-    "biryani master": 4.8,
-    "desi dera": 4.4,
-    "burger lab": 4.9,
-    "foodhub burgers": 4.3,
-    "pizza palace": 4.6,
-    "pasta corner": 4.7,
-    "wrap house": 4.5
-};
-
-/* ------------------------------
-   RESTAURANT DESCRIPTIONS
------------------------------- */
-
-const RESTAURANT_DESCRIPTIONS = {
-    "biryani master":
-        "Aromatic, flavour-packed biryani made with fragrant basmati rice, rich spices and tender pieces of chicken.",
-
-    "desi dera":
-        "A taste of traditional Pakistani cooking, serving hearty desi favourites, freshly prepared with homestyle flavour.",
-
-    "burger lab":
-        "Big, bold burgers built with juicy patties, fresh toppings and signature sauces for a satisfying bite.",
-
-    "foodhub burgers":
-        "Your stop for classic burger comfort, from crispy chicken favourites to loaded burgers and golden sides.",
-
-    "pizza palace":
-        "Freshly baked pizzas topped with savoury sauces, melted cheese and generous combinations of your favourite toppings.",
-
-    "pasta corner":
-        "Comforting Italian-inspired pasta dishes tossed in rich sauces and paired with delicious herbs and toppings.",
-
-    "wrap house":
-        "Freshly rolled wraps packed with seasoned fillings, crisp vegetables and flavourful sauces for an easy, satisfying meal."
-};
-
 function getRestaurantDescription(restaurant) {
-    const name = String(restaurant.name || "").trim().toLowerCase();
-
-    return RESTAURANT_DESCRIPTIONS[name] ||
-        restaurant.description ||
-        "Freshly prepared favourites, made with care and served straight to your table.";
+    return getRestaurantDesign(restaurant).description;
 }
 
 function getRestaurantRating(restaurant) {
     const name = String(restaurant.name || "").trim().toLowerCase();
-
-    if (RESTAURANT_RATINGS[name] !== undefined) {
-        return RESTAURANT_RATINGS[name].toFixed(1);
-    }
-
-    let hash = 0;
-
-    for (let i = 0; i < name.length; i++) {
-        hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-    }
-
-    return (4.0 + (hash % 11) / 10).toFixed(1);
+    return RATINGS[name] || "4.5";
 }
 
-/* ------------------------------
-   FOOD IMAGES
------------------------------- */
+function getRestaurantImage(restaurant) {
+    const name = String(restaurant.name || "").trim().toLowerCase();
+    return RESTAURANT_IMAGES[name] || RESTAURANT_IMAGES["burger lab"];
+}
 
-function getFoodImage(food) {
-    const text = `${food.name || ""} ${food.description || ""}`.toLowerCase();
+function getSlug(value) {
+    return String(value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+}
 
-    const images = [
-        ["biryani", "photo-1563379091339-03246963d96c"],
-        ["burger", "photo-1568901346375-23c9450c58cd"],
-        ["pizza", "photo-1513104890138-7c749659a591"],
-        ["sushi", "photo-1579871494447-9811cf80d66c"],
-        ["pasta", "photo-1473093295043-cdd812d0e601"],
-        ["cake", "photo-1578985545062-69928b1d9587"],
-        ["dessert", "photo-1551024506-0bccd828d307"],
-        ["coffee", "photo-1509042239860-f550ce710b93"],
-        ["chicken", "photo-1604908176997-125f25cc6f3d"],
-        ["fries", "photo-1573080496219-bb080dd4f877"],
-        ["rice", "photo-1512058564366-18510be2db19"],
-        ["wrap", "photo-1626700051175-6818013e1d4f"]
+function getFoodStyle(food, index) {
+    const name = String(food.name || "").toLowerCase();
+
+    const categories = [
+        { keywords: ["drink", "tea", "coffee", "juice", "lemonade", "lassi", "soda", "milkshake"], type: "drink" },
+        { keywords: ["cake", "brownie", "cheesecake", "pudding", "waffle", "churros", "ice cream"], type: "dessert" },
+        { keywords: ["rice", "biryani", "pulao", "bibimbap"], type: "rice" },
+        { keywords: ["pizza", "flatbread", "naan", "bread"], type: "baked" },
+        { keywords: ["pasta", "noodle", "ramen", "spaghetti", "lasagna"], type: "noodles" },
+        { keywords: ["burger", "sandwich", "wrap", "shawarma", "burrito"], type: "handheld" },
+        { keywords: ["fish", "prawn", "shrimp", "calamari", "salmon", "seafood"], type: "seafood" },
+        { keywords: ["grill", "kebab", "boti", "karahi", "steak", "chicken", "beef"], type: "grilled" }
     ];
 
-    for (const [keyword, image] of images) {
-        if (text.includes(keyword)) {
-            return imageURL(image);
-        }
-    }
+    const match = categories.find(category =>
+        category.keywords.some(keyword => name.includes(keyword))
+    );
 
-    return imageURL("photo-1546069901-ba9599a7e63c");
+    return match ? match.type : ["classic", "fresh", "special"][index % 3];
 }
-
-function getRestaurantImage(restaurant, index = 0) {
-    const design = getRestaurantDesign(restaurant, index);
-    return design.image ? imageURL(design.image) : "";
-}
-
-/* ------------------------------
-   GENERAL HELPERS
------------------------------- */
 
 function escapeHTML(value) {
     return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -224,18 +189,13 @@ function money(value) {
 }
 
 async function apiRequest(endpoint, options = {}) {
-    const headers = {
-        ...(options.headers || {})
-    };
+    const headers = { ...(options.headers || {}) };
 
     if (token) {
         headers.Authorization = `Bearer ${token}`;
     }
 
-    if (
-        options.body &&
-        !(options.body instanceof FormData)
-    ) {
+    if (options.body && !(options.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
     }
 
@@ -244,17 +204,13 @@ async function apiRequest(endpoint, options = {}) {
         headers
     });
 
-    if (response.status === 204) {
-        return null;
-    }
+    if (response.status === 204) return null;
 
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
         throw new Error(
-            data.detail ||
-            data.message ||
-            `Request failed (${response.status})`
+            data.detail || data.message || `Request failed (${response.status})`
         );
     }
 
@@ -279,9 +235,12 @@ function notify(message) {
     }, 3000);
 }
 
-/* ------------------------------
-   NAVIGATION
------------------------------- */
+function getList(response) {
+    if (Array.isArray(response)) return response;
+    return response?.items || response?.results || [];
+}
+
+/* NAVIGATION */
 
 function showSection(sectionId) {
     document.querySelectorAll(".section").forEach(section => {
@@ -289,62 +248,45 @@ function showSection(sectionId) {
     });
 
     const section = document.getElementById(sectionId);
-
     if (!section) return;
 
     section.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-    if (sectionId === "restaurants") {
-        loadRestaurants();
-    }
-
-    if (sectionId === "cart") {
-        renderCart();
-    }
-
-    if (sectionId === "orders") {
-        loadOrders();
-    }
-
-    if (sectionId === "checkout") {
-        renderCheckout();
-    }
+    if (sectionId === "restaurants") loadRestaurants();
+    if (sectionId === "cart") renderCart();
+    if (sectionId === "orders") loadOrders();
+    if (sectionId === "checkout") renderCheckout();
 }
 
 function updateAccount() {
-    document.getElementById("login-nav")
-        .classList.toggle("hidden", !!token);
+    const login = document.getElementById("login-nav");
+    const register = document.getElementById("register-nav");
+    const logoutButton = document.getElementById("logout-nav");
+    const accountName = document.getElementById("account-name");
 
-    document.getElementById("register-nav")
-        .classList.toggle("hidden", !!token);
+    if (!login || !register || !logoutButton || !accountName) return;
 
-    document.getElementById("logout-nav")
-        .classList.toggle("hidden", !token);
+    login.classList.toggle("hidden", !!token);
+    register.classList.toggle("hidden", !!token);
+    logoutButton.classList.toggle("hidden", !token);
 
-    document.getElementById("account-name").textContent =
-        token ? (localStorage.getItem("foodhub_name") || "Account") : "";
+    accountName.textContent = token
+        ? (localStorage.getItem("foodhub_name") || "Account")
+        : "";
 }
 
 function logout() {
     token = null;
-
     localStorage.removeItem("foodhub_token");
     localStorage.removeItem("foodhub_name");
 
     updateAccount();
-
     notify("Logged out successfully.");
     showSection("home");
 }
 
-/* ------------------------------
-   RESTAURANTS
------------------------------- */
+/* RESTAURANTS */
 
 async function loadRestaurants(search = "") {
     try {
@@ -353,106 +295,109 @@ async function loadRestaurants(search = "") {
             (search ? `&search=${encodeURIComponent(search)}` : "");
 
         const response = await apiRequest(endpoint);
-
-        const restaurants = Array.isArray(response)
-            ? response
-            : response.items || [];
-
-        renderRestaurants(restaurants);
+        renderRestaurants(getList(response));
 
     } catch (error) {
         console.error("Restaurant loading error:", error);
 
-        document.getElementById("restaurant-list").innerHTML = `
-            <div class="empty-state">
-                <h3>Unable to load restaurants</h3>
-                <p>${escapeHTML(error.message)}</p>
-            </div>
-        `;
+        const container = document.getElementById("restaurant-list");
+
+        if (container) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>Unable to load restaurants</h3>
+                    <p>${escapeHTML(error.message)}</p>
+                </div>
+            `;
+        }
     }
+}
+
+function createRestaurantCard(restaurant, index) {
+    const id = Number(restaurant.id);
+    const name = escapeHTML(restaurant.name);
+    const normalizedName = String(restaurant.name || "").trim().toLowerCase();
+
+    const category = escapeHTML(
+        restaurant.cuisine || restaurant.category || "Restaurant"
+    );
+
+    const rating = getRestaurantRating(restaurant);
+    const image = getRestaurantImage(restaurant);
+
+    const imageFallback = normalizedName === "biryani master"
+        ? BIRYANI_FALLBACK_IMAGE
+        : "";
+
+    return `
+        <article class="restaurant-card">
+
+            <div class="restaurant-image">
+                <img
+                    src="${image}"
+                    alt="${name}"
+                    loading="lazy"
+                    onerror="${imageFallback
+                        ? `this.onerror=null;this.src='${imageFallback}';`
+                        : "this.onerror=null;this.style.display='none';this.parentElement.classList.add('image-unavailable');"
+                    }"
+                >
+
+                <div class="restaurant-image-overlay"></div>
+
+                <span class="restaurant-category">${category}</span>
+
+                <div class="restaurant-image-content">
+                    <h3>${name}</h3>
+                </div>
+            </div>
+
+            <div class="restaurant-info">
+                <div class="restaurant-info-heading">
+                    <h3>${name}</h3>
+                    <span class="restaurant-rating">
+                        <span class="rating-star">★</span> ${rating}
+                    </span>
+                </div>
+
+                <p class="restaurant-description">
+                    ${escapeHTML(getRestaurantDescription(restaurant))}
+                </p>
+
+                <div class="restaurant-meta">
+                    <span>${category}</span>
+                    <span>Freshly prepared</span>
+                </div>
+
+                <button class="restaurant-button" onclick="openRestaurant(${id})">
+                    Explore Menu <span>→</span>
+                </button>
+            </div>
+
+        </article>
+    `;
 }
 
 function renderRestaurants(restaurants) {
-    const featured = restaurants.slice(0, 3);
+    const featuredList = document.getElementById("featured-restaurants");
+    const restaurantList = document.getElementById("restaurant-list");
 
-    function createCard(restaurant, index) {
-        const id = Number(restaurant.id);
-        const name = escapeHTML(restaurant.name);
+    const cards = restaurants.map(createRestaurantCard).join("");
 
-        const category = escapeHTML(
-            restaurant.cuisine ||
-            restaurant.category ||
-            "Restaurant"
-        );
-
-        const description = escapeHTML(
-            getRestaurantDescription(restaurant)
-        );
-
-        const design = getRestaurantDesign(restaurant, index);
-        const image = getRestaurantImage(restaurant, index);
-        const rating = getRestaurantRating(restaurant);
-
-        return `
-            <article class="restaurant-card">
-                <div class="restaurant-image"
-                     style="background-image:url('${image}')">
-
-                    <div class="image-overlay"></div>
-
-                    <span class="category-tag">
-                        ${design.icon} ${category}
-                    </span>
-
-                    <span class="restaurant-image-name">
-                        ${name}
-                    </span>
-                </div>
-
-                <div class="restaurant-info">
-                    <h3>${name}</h3>
-                    <p>${description}</p>
-
-                    <div class="restaurant-meta">
-                        <span title="Restaurant rating">
-                            ★ ${rating} Rating
-                        </span>
-                        <span>${category}</span>
-                    </div>
-
-                    <button class="card-action"
-                        onclick="openRestaurant(${id})">
-                        Explore Menu →
-                    </button>
-                </div>
-            </article>
-        `;
+    if (restaurantList) {
+        restaurantList.innerHTML = restaurants.length
+            ? cards
+            : `<div class="empty-state"><h3>No restaurants found</h3><p>Try another search.</p></div>`;
     }
 
-    const restaurantList = document.getElementById("restaurant-list");
-    const featuredList = document.getElementById("featured-restaurants");
-
-    restaurantList.innerHTML = restaurants.length
-        ? restaurants.map(createCard).join("")
-        : `
-            <div class="empty-state">
-                <h3>No restaurants found</h3>
-                <p>Try searching for something else.</p>
-            </div>
-        `;
-
-    featuredList.innerHTML = featured.length
-        ? featured.map(createCard).join("")
-        : `
-            <div class="empty-state">
-                <h3>No featured restaurants available.</h3>
-            </div>
-        `;
+    if (featuredList) {
+        featuredList.innerHTML = restaurants.length
+            ? restaurants.slice(0, 3).map(createRestaurantCard).join("")
+            : `<div class="empty-state"><h3>No restaurants available yet.</h3></div>`;
+    }
 }
 
-/* ------------------------------
-   RESTAURANT MENU
------------------------------- */
+/* RESTAURANT MENU */
 
 async function openRestaurant(restaurantId) {
     try {
@@ -460,9 +405,7 @@ async function openRestaurant(restaurantId) {
             "/restaurants/?active_only=true&limit=100"
         );
 
-        const restaurants = Array.isArray(response)
-            ? response
-            : response.items || [];
+        const restaurants = getList(response);
 
         currentRestaurant = restaurants.find(
             restaurant => Number(restaurant.id) === Number(restaurantId)
@@ -472,10 +415,22 @@ async function openRestaurant(restaurantId) {
             throw new Error("Restaurant not found.");
         }
 
-        document.getElementById("menu-heading").innerHTML = `
-            <span class="eyebrow">EXPLORE THE MENU</span>
-            <h1>${escapeHTML(currentRestaurant.name)}</h1>
-            <p>${escapeHTML(getRestaurantDescription(currentRestaurant))}</p>
+        const menuHeading = document.getElementById("menu-heading");
+
+        menuHeading.innerHTML = `
+            <div class="menu-brand">
+                <div class="menu-brand-topline">
+                    <span class="eyebrow">FOODHUB COLLECTION</span>
+                </div>
+
+                <h1>${escapeHTML(currentRestaurant.name)}</h1>
+                <p>${escapeHTML(getRestaurantDescription(currentRestaurant))}</p>
+
+                <div class="menu-brand-footer">
+                    <span>CURATED MENU</span>
+                    <span>PREPARED FRESH</span>
+                </div>
+            </div>
         `;
 
         showSection("menu");
@@ -484,11 +439,7 @@ async function openRestaurant(restaurantId) {
             `/restaurants/${restaurantId}/foods?available_only=true&limit=100`
         );
 
-        const foods = Array.isArray(foodResponse)
-            ? foodResponse
-            : foodResponse.items || [];
-
-        renderFoodItems(foods);
+        renderFoodItems(getList(foodResponse));
 
     } catch (error) {
         console.error(error);
@@ -496,12 +447,12 @@ async function openRestaurant(restaurantId) {
     }
 }
 
-/* ------------------------------
-   FOOD ITEMS
------------------------------- */
+/* FOOD ITEMS */
 
 function renderFoodItems(foods) {
     const container = document.getElementById("menu-items");
+
+    if (!container) return;
 
     if (!foods.length) {
         container.innerHTML = `
@@ -513,22 +464,25 @@ function renderFoodItems(foods) {
         return;
     }
 
-    container.innerHTML = foods.map(food => {
-        const image = getFoodImage(food);
-        const name = escapeHTML(food.name);
+    const design = getRestaurantDesign(currentRestaurant);
 
+    container.innerHTML = foods.map((food, index) => {
+        const name = escapeHTML(food.name);
         const description = escapeHTML(
-            food.description || "Freshly prepared and delicious."
+            food.description || "Prepared fresh for your order."
         );
 
         const price = Number(food.price);
         const foodId = Number(food.id);
         const restaurantId = Number(currentRestaurant.id);
+        const foodType = getFoodStyle(food, index);
 
         return `
             <article class="food-card">
-                <div class="food-image"
-                     style="background-image:url('${image}')">
+                <div class="food-card-top" style="--food-accent:${design.accent};--food-soft:${design.soft}">
+                    <span class="food-card-number">${String(index + 1).padStart(2, "0")}</span>
+                    <span class="food-card-type">${foodType}</span>
+                    <div class="food-card-decoration"></div>
                 </div>
 
                 <div class="food-info">
@@ -536,9 +490,7 @@ function renderFoodItems(foods) {
                     <p>${description}</p>
 
                     <div class="food-bottom">
-                        <span class="food-price">
-                            ${money(price)}
-                        </span>
+                        <strong>${money(price)}</strong>
 
                         <button
                             class="add-button"
@@ -546,7 +498,8 @@ function renderFoodItems(foods) {
                             data-food-id="${foodId}"
                             data-food-name="${name}"
                             data-food-price="${price}"
-                            data-restaurant-id="${restaurantId}">
+                            data-restaurant-id="${restaurantId}"
+                        >
                             + Add
                         </button>
                     </div>
@@ -562,13 +515,7 @@ function addToCartFromButton(button) {
     const price = Number(button.dataset.foodPrice);
     const restaurantId = Number(button.dataset.restaurantId);
 
-    if (
-        !foodId ||
-        !name ||
-        !Number.isFinite(price) ||
-        !restaurantId
-    ) {
-        console.error("Invalid food item data:", button.dataset);
+    if (!foodId || !name || !Number.isFinite(price) || !restaurantId) {
         notify("Unable to add this item. Please refresh the menu.");
         return;
     }
@@ -576,9 +523,7 @@ function addToCartFromButton(button) {
     addToCart(foodId, name, price, restaurantId);
 }
 
-/* ------------------------------
-   SHOPPING CART
------------------------------- */
+/* SHOPPING CART */
 
 function addToCart(foodId, name, price, restaurantId) {
     if (
@@ -610,27 +555,28 @@ function addToCart(foodId, name, price, restaurantId) {
 }
 
 function updateCartCount() {
-    const count = cart.reduce(
+    const element = document.getElementById("cart-count");
+    if (!element) return;
+
+    element.textContent = cart.reduce(
         (total, item) => total + item.quantity,
         0
     );
-
-    document.getElementById("cart-count").textContent = count;
 }
 
 function renderCart() {
     const container = document.getElementById("cart-items");
     const summary = document.getElementById("cart-summary");
 
+    if (!container || !summary) return;
+
     if (!cart.length) {
         container.innerHTML = `
             <div class="empty-state">
                 <h3>Your cart is empty.</h3>
                 <p>Find something delicious to order.</p>
-
-                <button class="btn btn-primary"
-                    onclick="showSection('restaurants')">
-                    Explore Restaurants
+                <button class="primary-button" onclick="showSection('restaurants')">
+                    Explore restaurants
                 </button>
             </div>
         `;
@@ -641,18 +587,19 @@ function renderCart() {
 
     container.innerHTML = cart.map((item, index) => `
         <div class="cart-item">
-            <div>
+            <div class="cart-item-details">
                 <strong>${escapeHTML(item.name)}</strong>
-                <p>${money(item.price)} × ${item.quantity}</p>
+                <p>${money(item.price)} each</p>
             </div>
 
-            <div>
-                <strong>${money(item.price * item.quantity)}</strong>
-
-                <button onclick="changeQuantity(${index}, -1)">−</button>
-                <button onclick="changeQuantity(${index}, 1)">+</button>
-                <button onclick="removeFromCart(${index})">Remove</button>
+            <div class="cart-item-actions">
+                <button onclick="changeQuantity(${index}, -1)" aria-label="Decrease quantity">−</button>
+                <strong>${item.quantity}</strong>
+                <button onclick="changeQuantity(${index}, 1)" aria-label="Increase quantity">+</button>
+                <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
             </div>
+
+            <strong class="cart-item-total">${money(item.price * item.quantity)}</strong>
         </div>
     `).join("");
 
@@ -662,13 +609,12 @@ function renderCart() {
     );
 
     summary.innerHTML = `
-        <div class="cart-total">
-            Total: ${money(total)}
+        <div class="cart-total-row">
+            <span>Total</span>
+            <strong>${money(total)}</strong>
         </div>
-
-        <button class="btn btn-primary"
-            onclick="showSection('checkout')">
-            Proceed to Checkout →
+        <button class="primary-button full-button" onclick="showSection('checkout')">
+            Proceed to checkout <span>→</span>
         </button>
     `;
 }
@@ -687,15 +633,14 @@ function changeQuantity(index, amount) {
 }
 
 function removeFromCart(index) {
-    cart.splice(index, 1);
+    if (!cart[index]) return;
 
+    cart.splice(index, 1);
     updateCartCount();
     renderCart();
 }
 
-/* ------------------------------
-   CHECKOUT
------------------------------- */
+/* CHECKOUT */
 
 async function renderCheckout() {
     if (!token) {
@@ -715,19 +660,29 @@ async function renderCheckout() {
         0
     );
 
-    document.getElementById("checkout-summary").innerHTML = `
-        <div class="cart-total">
-            Order total: ${money(total)}
-        </div>
+    const summary = document.getElementById("checkout-summary");
 
-        <p>Payment method: Cash on Delivery</p>
-    `;
+    if (summary) {
+        summary.innerHTML = `
+            ${cart.map(item => `
+                <div class="checkout-summary-item">
+                    <span>${escapeHTML(item.name)} × ${item.quantity}</span>
+                    <strong>${money(item.price * item.quantity)}</strong>
+                </div>
+            `).join("")}
+            <div class="cart-total-row">
+                <span>Total</span>
+                <strong>${money(total)}</strong>
+            </div>
+            <p class="checkout-cod-note">Payment: Cash on Delivery</p>
+        `;
+    }
 
     try {
         const profile = await apiRequest("/customers/me");
         const addressField = document.getElementById("checkout-address");
 
-        if (profile.address && !addressField.value) {
+        if (profile.address && addressField && !addressField.value) {
             addressField.value = profile.address;
         }
     } catch (error) {
@@ -748,7 +703,8 @@ async function placeOrder() {
         return;
     }
 
-    const address = document.getElementById("checkout-address").value.trim();
+    const addressField = document.getElementById("checkout-address");
+    const address = addressField ? addressField.value.trim() : "";
 
     if (!address) {
         notify("Please enter your delivery address.");
@@ -773,7 +729,6 @@ async function placeOrder() {
 
         cart = [];
         updateCartCount();
-
         notify("Order placed successfully!");
         showSection("orders");
 
@@ -783,22 +738,18 @@ async function placeOrder() {
     }
 }
 
-/* ------------------------------
-   ORDER HISTORY
------------------------------- */
+/* ORDER HISTORY */
 
 async function loadOrders() {
     const container = document.getElementById("order-list");
+
+    if (!container) return;
 
     if (!token) {
         container.innerHTML = `
             <div class="empty-state">
                 <h3>Login to view your orders.</h3>
-
-                <button class="btn btn-primary"
-                    onclick="showSection('login')">
-                    Login
-                </button>
+                <button class="primary-button" onclick="showSection('login')">Login</button>
             </div>
         `;
         return;
@@ -806,10 +757,7 @@ async function loadOrders() {
 
     try {
         const response = await apiRequest("/orders/customer/me");
-
-        const orders = Array.isArray(response)
-            ? response
-            : response.items || [];
+        const orders = getList(response);
 
         if (!orders.length) {
             container.innerHTML = `
@@ -822,23 +770,19 @@ async function loadOrders() {
         }
 
         container.innerHTML = orders.map(order => `
-            <div class="order-card">
-                <div>
-                    <strong>Order #${Number(order.id)}</strong>
-
-                    <p>
-                        Status: ${escapeHTML(order.status || "Pending")}
-                    </p>
-
-                    <p>Total: ${money(order.total_amount)}</p>
+            <article class="order-card">
+                <div class="order-card-main">
+                    <span class="eyebrow">FOODHUB ORDER</span>
+                    <h3>Order #${Number(order.id)}</h3>
+                    <p>Status: <strong>${escapeHTML(order.status || "Pending")}</strong></p>
+                    <p>Total: <strong>${money(order.total_amount)}</strong></p>
                     <p>Payment: Cash on Delivery</p>
                 </div>
 
-                <button class="btn btn-outline"
-                    onclick="downloadInvoice(${Number(order.id)})">
-                    Download Invoice
+                <button class="outline-button" onclick="downloadInvoice(${Number(order.id)})">
+                    Download invoice ↓
                 </button>
-            </div>
+            </article>
         `).join("");
 
     } catch (error) {
@@ -853,9 +797,7 @@ async function loadOrders() {
     }
 }
 
-/* ------------------------------
-   INVOICE DOWNLOAD
------------------------------- */
+/* INVOICE DOWNLOAD */
 
 async function downloadInvoice(orderId) {
     try {
@@ -867,11 +809,10 @@ async function downloadInvoice(orderId) {
 
         const schema = await schemaResponse.json();
 
-        const paths = Object.entries(schema.paths || {});
-
-        const candidates = paths.filter(([path, methods]) => {
-            return path.toLowerCase().includes("invoice") && methods.get;
-        });
+        const candidates = Object.entries(schema.paths || {})
+            .filter(([path, methods]) =>
+                path.toLowerCase().includes("invoice") && methods.get
+            );
 
         if (!candidates.length) {
             throw new Error("No invoice download endpoint was found.");
@@ -881,32 +822,25 @@ async function downloadInvoice(orderId) {
             path.includes("{order_id}") || path.includes("{id}")
         );
 
-        if (!selectedPath) {
-            selectedPath = candidates[0];
-        }
+        if (!selectedPath) selectedPath = candidates[0];
 
         const endpoint = selectedPath[0]
             .replace("{order_id}", String(orderId))
             .replace("{id}", String(orderId));
 
         const response = await fetch(API + endpoint, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
+            headers: { Authorization: `Bearer ${token}` }
         });
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-
-            throw new Error(
-                errorData.detail || "Unable to download invoice."
-            );
+            throw new Error(errorData.detail || "Unable to download invoice.");
         }
 
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-
         const link = document.createElement("a");
+
         link.href = url;
         link.download = `FoodHub-Invoice-${orderId}.pdf`;
 
@@ -922,9 +856,7 @@ async function downloadInvoice(orderId) {
     }
 }
 
-/* ------------------------------
-   LOGIN
------------------------------- */
+/* LOGIN */
 
 document.getElementById("login-form").addEventListener("submit", async event => {
     event.preventDefault();
@@ -933,25 +865,17 @@ document.getElementById("login-form").addEventListener("submit", async event => 
     const password = document.getElementById("login-password").value;
 
     try {
-        // Backend expects JSON with email and password.
         const data = await apiRequest("/auth/login", {
             method: "POST",
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
+            body: JSON.stringify({ email, password })
         });
 
         token = data.access_token;
 
         localStorage.setItem("foodhub_token", token);
-        localStorage.setItem(
-            "foodhub_name",
-            data.customer_name || "Account"
-        );
+        localStorage.setItem("foodhub_name", data.customer_name || "Account");
 
         updateAccount();
-
         notify("Welcome back!");
         showSection("home");
 
@@ -961,9 +885,7 @@ document.getElementById("login-form").addEventListener("submit", async event => 
     }
 });
 
-/* ------------------------------
-   REGISTRATION
------------------------------- */
+/* REGISTRATION */
 
 document.getElementById("register-form").addEventListener("submit", async event => {
     event.preventDefault();
@@ -991,9 +913,33 @@ document.getElementById("register-form").addEventListener("submit", async event 
     }
 });
 
-/* ------------------------------
-   INITIALIZATION
------------------------------- */
+/* SEARCH */
+
+const restaurantSearch = document.getElementById("restaurant-search");
+
+if (restaurantSearch) {
+    let searchTimeout;
+
+    restaurantSearch.addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(() => {
+            loadRestaurants(restaurantSearch.value.trim());
+        }, 250);
+    });
+}
+
+/* MOBILE NAVIGATION */
+
+const mobileToggle = document.getElementById("mobile-menu-toggle");
+
+if (mobileToggle) {
+    mobileToggle.addEventListener("click", () => {
+        document.querySelector(".desktop-nav")?.classList.toggle("mobile-open");
+    });
+}
+
+/* INITIALIZATION */
 
 updateAccount();
 updateCartCount();
